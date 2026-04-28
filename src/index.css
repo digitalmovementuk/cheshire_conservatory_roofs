@@ -336,6 +336,16 @@ p {
   margin-bottom: var(--s-2);
 }
 
+/* When section-heading sits inside a flex-column wrap (.process-wrap,
+   .areas-wrap, .faq-wrap), the wrap's `gap` already produces the
+   desired separation — kill the heading's own margin-bottom so we
+   don't get double spacing */
+.process-wrap > .section-heading,
+.areas-wrap > .section-heading,
+.faq-wrap > .section-heading {
+  margin-bottom: 0;
+}
+
 /* =========================================================================
    BUTTONS
    ========================================================================= */
@@ -801,7 +811,6 @@ p {
 .hero-grid {
   position: relative;
   z-index: 1;
-  width: 100%;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(340px, 400px);
   grid-template-rows: auto auto;
@@ -853,7 +862,7 @@ p {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(16px, 2vw, 24px);
   max-width: 520px;
-  padding-top: clamp(14px, 2vh, 22px);
+  padding-top: clamp(20px, 2.6vh, 28px);
   border-top: 1px solid rgba(243, 239, 226, 0.18);
 }
 
@@ -1797,7 +1806,7 @@ p {
 .final-cta {
   background: var(--surface-deep);
   color: var(--on-deep);
-  padding-block: clamp(72px, 9vw, 128px);
+  padding-block: clamp(64px, 9vw, 128px);
   position: relative;
   overflow: hidden;
 }
@@ -2529,6 +2538,10 @@ p {
     padding-left: var(--s-5);
   }
 
+  .process-step:nth-last-child(-n + 2) {
+    border-bottom: none;
+  }
+
   .footer-grid {
     grid-template-columns: 1fr 1fr;
     row-gap: var(--s-7);
@@ -2764,6 +2777,10 @@ p {
 
   .process-step:nth-child(even) {
     padding-left: 0;
+  }
+
+  .process-step:last-child {
+    border-bottom: none;
   }
 
   .areas-list {

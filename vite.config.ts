@@ -1,9 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+const BASE = '/cheshire_conservatory_roofs/'
+
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/cheshire_conservatory_roofs/',
+  base: BASE,
   plugins: [
     react(),
     {
@@ -15,7 +17,7 @@ export default defineConfig({
             tag: 'script',
             attrs: { type: 'module' },
             children: `
-import RefreshRuntime from "/@react-refresh"
+import RefreshRuntime from "${BASE}@react-refresh"
 RefreshRuntime.injectIntoGlobalHook(window)
 window.$RefreshReg$ = () => {}
 window.$RefreshSig$ = () => (type) => type
