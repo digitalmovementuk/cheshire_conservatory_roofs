@@ -1420,6 +1420,14 @@ p {
   background: var(--paper);
 }
 
+.suppliers-section .section-heading {
+  max-width: none;
+}
+
+.suppliers-section .section-heading h2.display {
+  max-width: none;
+}
+
 .supplier-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
