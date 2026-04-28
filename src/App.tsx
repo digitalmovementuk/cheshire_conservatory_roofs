@@ -276,6 +276,15 @@ const faqs = [
 const revealDelay = (index: number, step = 70) =>
   ({ '--reveal-delay': `${index * step}ms` }) as CSSProperties
 
+const CONSENT_KEY = 'ccr-consent-v1'
+
+type ConsentState = {
+  necessary: true
+  analytics: boolean
+  marketing: boolean
+  ts: number
+}
+
 function App() {
   const heroRef = useRef<HTMLElement | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -283,6 +292,44 @@ function App() {
   const [showSticky, setShowSticky] = useState(false)
   const [openFaq, setOpenFaq] = useState<number>(0)
   const [sent, setSent] = useState(false)
+  const [consentOpen, setConsentOpen] = useState(false)
+  const [consentMode, setConsentMode] = useState<'banner' | 'manage'>('banner')
+  const [prefAnalytics, setPrefAnalytics] = useState(false)
+  const [prefMarketing, setPrefMarketing] = useState(false)
+
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem(CONSENT_KEY)
+      if (!stored) {
+        const t = window.setTimeout(() => setConsentOpen(true), 600)
+        return () => window.clearTimeout(t)
+      }
+    } catch {
+      const t = window.setTimeout(() => setConsentOpen(true), 600)
+      return () => window.clearTimeout(t)
+    }
+  }, [])
+
+  const persistConsent = (state: ConsentState) => {
+    try {
+      window.localStorage.setItem(CONSENT_KEY, JSON.stringify(state))
+    } catch {
+      /* storage unavailable — proceed without persistence */
+    }
+    setConsentOpen(false)
+  }
+
+  const acceptAll = () =>
+    persistConsent({ necessary: true, analytics: true, marketing: true, ts: Date.now() })
+  const rejectAll = () =>
+    persistConsent({ necessary: true, analytics: false, marketing: false, ts: Date.now() })
+  const savePreferences = () =>
+    persistConsent({
+      necessary: true,
+      analytics: prefAnalytics,
+      marketing: prefMarketing,
+      ts: Date.now(),
+    })
 
   useEffect(() => {
     const onScroll = () => {
@@ -996,7 +1043,18 @@ function App() {
           <span className="footer-policies">
             <a href="#">Terms &amp; Conditions</a>
             <a href="#">Privacy Policy</a>
+            <a href="#">Cookie Policy</a>
             <a href="#">GDPR Policy</a>
+            <button
+              type="button"
+              className="footer-cookie-button"
+              onClick={() => {
+                setConsentMode('banner')
+                setConsentOpen(true)
+              }}
+            >
+              Cookie settings
+            </button>
           </span>
         </div>
       </footer>
@@ -1020,13 +1078,139 @@ function App() {
               <Phone size={15} aria-hidden="true" />
               Call
             </a>
-            <a className="button button-primary button-sm" href="#quote">
+            <a className="button button-primary button-sm button-pulse" href="#quote">
               Get a quote
               <ArrowRight size={15} aria-hidden="true" />
             </a>
           </div>
         </div>
       </div>
+
+      {consentOpen && (
+        <div
+          className="consent-root"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="consent-title"
+          aria-describedby="consent-desc"
+        >
+          <div className="consent-backdrop" aria-hidden="true" />
+          <div className="consent-panel">
+            {consentMode === 'banner' ? (
+              <>
+                <div className="consent-copy">
+                  <span className="consent-eyebrow">
+                    <ShieldCheck size={14} aria-hidden="true" />
+                    Your privacy
+                  </span>
+                  <h2 id="consent-title" className="consent-title">
+                    We use cookies to make this site work and to improve it.
+                  </h2>
+                  <p id="consent-desc">
+                    We use strictly necessary cookies for the site to function. With your consent
+                    we&rsquo;ll also use analytics and marketing cookies to understand how the site
+                    is used and to measure campaigns. You can accept, reject, or choose what to
+                    allow. See our{' '}
+                    <a href="#" className="consent-link">
+                      Privacy Policy
+                    </a>{' '}
+                    and{' '}
+                    <a href="#" className="consent-link">
+                      Cookie Policy
+                    </a>
+                    .
+                  </p>
+                </div>
+                <div className="consent-actions">
+                  <button type="button" className="consent-btn consent-btn-ghost" onClick={rejectAll}>
+                    Reject all
+                  </button>
+                  <button
+                    type="button"
+                    className="consent-btn consent-btn-ghost"
+                    onClick={() => setConsentMode('manage')}
+                  >
+                    Manage preferences
+                  </button>
+                  <button type="button" className="consent-btn consent-btn-primary" onClick={acceptAll}>
+                    Accept all
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="consent-copy">
+                  <span className="consent-eyebrow">
+                    <ShieldCheck size={14} aria-hidden="true" />
+                    Manage cookies
+                  </span>
+                  <h2 id="consent-title" className="consent-title">
+                    Choose what you&rsquo;re comfortable with.
+                  </h2>
+                  <p id="consent-desc">
+                    Necessary cookies are always active. You can turn the others on or off below
+                    and change your choice at any time.
+                  </p>
+                </div>
+                <ul className="consent-list">
+                  <li>
+                    <div>
+                      <strong>Strictly necessary</strong>
+                      <span>Required for core site features. Cannot be turned off.</span>
+                    </div>
+                    <span className="consent-pill consent-pill-locked">Always on</span>
+                  </li>
+                  <li>
+                    <div>
+                      <strong>Analytics</strong>
+                      <span>Helps us understand how visitors use the site.</span>
+                    </div>
+                    <label className="consent-switch">
+                      <input
+                        type="checkbox"
+                        checked={prefAnalytics}
+                        onChange={(e) => setPrefAnalytics(e.target.checked)}
+                        aria-label="Allow analytics cookies"
+                      />
+                      <span aria-hidden="true" />
+                    </label>
+                  </li>
+                  <li>
+                    <div>
+                      <strong>Marketing</strong>
+                      <span>Used to measure campaigns and show relevant ads.</span>
+                    </div>
+                    <label className="consent-switch">
+                      <input
+                        type="checkbox"
+                        checked={prefMarketing}
+                        onChange={(e) => setPrefMarketing(e.target.checked)}
+                        aria-label="Allow marketing cookies"
+                      />
+                      <span aria-hidden="true" />
+                    </label>
+                  </li>
+                </ul>
+                <div className="consent-actions">
+                  <button
+                    type="button"
+                    className="consent-btn consent-btn-ghost"
+                    onClick={() => setConsentMode('banner')}
+                  >
+                    Back
+                  </button>
+                  <button type="button" className="consent-btn consent-btn-ghost" onClick={rejectAll}>
+                    Reject all
+                  </button>
+                  <button type="button" className="consent-btn consent-btn-primary" onClick={savePreferences}>
+                    Save preferences
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </>
   )
 }
