@@ -1964,21 +1964,24 @@ p {
 .bottom-cta {
   position: fixed;
   left: 50%;
-  bottom: 24px;
+  bottom: 22px;
   z-index: 90;
-  width: min(50vw, 960px);
+  width: min(640px, calc(100% - 48px));
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 14px 18px 14px 22px;
-  background: rgba(251, 249, 242, 0.94);
-  backdrop-filter: blur(18px) saturate(110%);
-  -webkit-backdrop-filter: blur(18px) saturate(110%);
-  border: 1px solid rgba(201, 197, 182, 0.72);
-  border-radius: 28px;
+  padding: 12px 12px 12px 24px;
+  background: rgba(251, 249, 242, 0.96);
+  backdrop-filter: blur(20px) saturate(120%);
+  -webkit-backdrop-filter: blur(20px) saturate(120%);
+  border: 1px solid rgba(201, 197, 182, 0.6);
+  border-radius: 26px;
   transform: translate(-50%, calc(100% + 32px));
   transition: transform 360ms var(--ease);
-  box-shadow: 0 18px 50px rgba(20, 32, 26, 0.16);
+  box-shadow:
+    0 20px 48px rgba(20, 32, 26, 0.18),
+    0 4px 12px rgba(20, 32, 26, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
 .bottom-cta.is-visible {
@@ -1990,33 +1993,54 @@ p {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--s-4);
+  gap: 18px;
 }
 
 .bottom-cta-copy {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
   min-width: 0;
+  flex: 1 1 auto;
 }
 
 .bottom-cta-copy strong {
   font-family: var(--font-display);
-  font-size: 17px;
-  letter-spacing: -0.01em;
+  font-size: 15px;
+  line-height: 1.25;
+  letter-spacing: -0.012em;
   color: var(--ink);
-  font-weight: 500;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .bottom-cta-copy span {
-  font-size: 13px;
+  font-size: 12.5px;
+  line-height: 1.35;
   color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .bottom-cta-actions {
   display: flex;
   gap: 8px;
   flex-shrink: 0;
+  align-items: center;
+}
+
+.bottom-cta-actions .button-sm {
+  height: 40px;
+  padding: 0 16px;
+  font-size: 13.5px;
+  letter-spacing: -0.005em;
+}
+
+.bottom-cta-actions .button-sm svg {
+  margin-right: -2px;
 }
 
 /* =========================================================================
@@ -2532,6 +2556,18 @@ p {
     width: calc(100% - 32px);
   }
 
+  /* Mobile: backdrop-filter is less reliable on iOS Safari, so use a near-solid
+     background instead of relying on blur for legibility */
+  .site-header.is-scrolled {
+    background: rgba(251, 249, 242, 0.97);
+    box-shadow: 0 1px 0 rgba(20, 32, 26, 0.1), 0 6px 18px rgba(20, 32, 26, 0.08);
+  }
+
+  .site-header.is-scrolled .top-bar {
+    background: rgba(20, 32, 26, 0.96);
+    border-bottom: 1px solid rgba(243, 239, 226, 0.12);
+  }
+
   .top-bar-inner {
     width: calc(100% - 32px);
     flex-direction: row;
@@ -2745,12 +2781,12 @@ p {
   }
 
   .bottom-cta {
-    left: 16px;
-    right: 16px;
-    bottom: 16px;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
     width: auto;
-    padding: 12px 16px;
-    border-radius: 22px;
+    padding: 10px 10px 10px 18px;
+    border-radius: 20px;
     transform: translateY(calc(100% + 28px));
   }
 
@@ -2760,10 +2796,24 @@ p {
 
   .bottom-cta-inner {
     width: 100%;
-    gap: var(--s-3);
+    gap: 12px;
+  }
+
+  .bottom-cta-copy strong {
+    font-size: 14px;
   }
 
   .bottom-cta-copy span {
     display: none;
+  }
+
+  .bottom-cta-actions {
+    gap: 6px;
+  }
+
+  .bottom-cta-actions .button-sm {
+    height: 38px;
+    padding: 0 13px;
+    font-size: 13px;
   }
 }
