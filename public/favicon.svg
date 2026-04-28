@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Cheshire Conservatory Roofs">
+  <rect width="64" height="64" rx="10" fill="#fbfdf7"/>
+  <path d="M8 33 32 15l24 18v9L32 24 8 42z" fill="#314d2a"/>
+  <path d="M25 33 49 15l7 5-24 18z" fill="#87b040"/>
+  <path d="M18 49h28v5H18z" fill="#87b040"/>
+</svg>
